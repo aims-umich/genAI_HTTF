@@ -90,7 +90,7 @@ pip install torch torchvision torchaudio
 pip install pandas matplotlib scikit-learn seaborn
 
 
-Example: Intra-Experiment Diffusion Model
+## Example: Intra-Experiment Diffusion Model
 One representative workflow is the GNN-GRU diffusion model for PG-29 intra-experiment reconstruction
 Run the corresponding DM script, for example:
 python models/DM/gnn_gru_dm.py

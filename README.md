@@ -103,7 +103,7 @@ python models/DM/gnn_gru_dm.py
 Typical results may be stored under:
 
 ```text
-results/
+results/DM/
 ```
 
 with files such as:

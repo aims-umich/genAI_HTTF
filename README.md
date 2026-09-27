@@ -88,27 +88,40 @@ pip install torch torchvision torchaudio
 
 # 4. Install other relevant packages
 pip install pandas matplotlib scikit-learn seaborn
-
+```
 
 ## Example: Intra-Experiment Diffusion Model
-One representative workflow is the GNN-GRU diffusion model for PG-29 intra-experiment reconstruction
-Run the corresponding DM script, for example:
-python models/DM/gnn_gru_dm.py
 
+One representative workflow is the GNN-GRU diffusion model for PG-29 intra-experiment reconstruction.
+
+Run the corresponding DM script:
+
+```bash
+python models/DM/gnn_gru_dm.py
+```
 
 Typical results may be stored under:
+
+```text
 results/
+```
 
 with files such as:
+
+```text
 global_metrics.csv
 per_sensor_metrics.csv
 predictions.csv
 reconstruction_timeseries.png
 sensor_rmse.png
+```
 
-Citation:
+## Citation
+
+```bibtex
 @article{nabila2026spatial,
   title   = {Spatially Aware Generative Models for Full-Field Sensor Reconstruction in Safety-critical Digital Twins},
   author  = {Nabila, Umme Mahbuba and Lin, Linyu and Radaideh, Majdi I.},
   year    = {2026}
 }
+```

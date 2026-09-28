@@ -68,17 +68,39 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-# ============================================================
-# 1. CONFIG
-# ============================================================
-############### opposite
+from pathlib import Path
+import os
 
+ROOT = Path(__file__).resolve().parents[2]
 
-PG29_PATH = "/home/unabila/pg27/pg27_TS_30s_common_temp.csv"
-PG27_PATH = "/home/unabila/PG29/pg29_TS_30s_common.csv"
-COORD_PATH = "/home/unabila/PG29/core_TC_coordinates_common_norm.csv"
+PG27_PATH = Path(
+    os.environ.get(
+        "PG27_PATH",
+        ROOT / "data" / "pg27_TS_30s_common_temp.csv"
+    )
+)
 
-OUT_DIR = Path(os.environ.get("OUT_DIR", "/home/unabila/pg27/inv_section_context_local_dm_v2"))
+PG29_PATH = Path(
+    os.environ.get(
+        "PG29_PATH",
+        ROOT / "data" / "pg29_TS_30s_common.csv"
+    )
+)
+
+COORD_PATH = Path(
+    os.environ.get(
+        "COORD_PATH",
+        ROOT / "data" / "core_TC_coordinates_common_norm.csv"
+    )
+)
+
+OUT_DIR = Path(
+    os.environ.get(
+        "OUT_DIR",
+        ROOT / "results" / "inter" / "section_context_local_dm"
+    )
+)
+
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 SEED = int(os.environ.get("SEED", "42"))

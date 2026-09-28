@@ -83,24 +83,34 @@ import matplotlib.pyplot as plt
 
 
 # ============================================================
+# # ============================================================
 # 0. CONFIGURATION
 # ============================================================
-TF_CSV = os.environ.get(
-    "TF_CSV",
-    "/home/unabila/PG29/pg29_TF_30s_common.csv",
+
+ROOT = Path(__file__).resolve().parents[2]
+
+TF_CSV = Path(
+    os.environ.get(
+        "TF_CSV",
+        ROOT / "data" / "pg29_TF_30s_common.csv",
+    )
 )
-COORD_CSV = os.environ.get(
-    "COORD_CSV",
-    "/home/unabila/PG29/core_TC_coordinates_common_norm.csv",
+
+COORD_CSV = Path(
+    os.environ.get(
+        "COORD_CSV",
+        ROOT / "data" / "core_TC_coordinates_common_norm.csv",
+    )
 )
+
 OUT_DIR = Path(
     os.environ.get(
         "OUT_DIR",
-        "/home/unabila/PG29/TF_20test_66known_21target_GNNGRU_GRU_Ridge",
+        ROOT / "results" / "intra" / "GNNGRU_GRU_Ridge",
     )
 )
-OUT_DIR.mkdir(parents=True, exist_ok=True)
 
+OUT_DIR.mkdir(parents=True, exist_ok=True)
 # Fixed TF split sizes.
 N_TF_EXPECTED = int(os.environ.get("N_TF_EXPECTED", "107"))
 N_TEST_EXPECTED = int(os.environ.get("N_TEST_EXPECTED", "20"))

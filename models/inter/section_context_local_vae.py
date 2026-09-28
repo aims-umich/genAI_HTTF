@@ -4,40 +4,6 @@
 """
 Section-context conditional VAE model for PG27 -> PG29 TS reconstruction.
 
-This is the VAE-focused cross-experiment attempt with the same no-cheat setup
-as the section-context local reconstruction script.
-
-Main idea:
-    The target sensor residual is reconstructed from two context sets:
-        1. physically nearby known sensors
-        2. PG27 behavior-section known sensors
-
-Why:
-    Some sensors are not nearest neighbors but follow similar up/down behavior.
-    The PG27 peak/transient section context is kept unchanged so the VAE is
-    tested against the same problem setup used by the previous model.
-
-No-cheating protocol:
-    - Train the VAE on PG27 only.
-    - Select section sensors using PG27 only.
-    - Use PG29 known sensors only for optional pseudo-target calibration/gating.
-    - Use PG29 manual missing truth only for final reporting.
-
-Prediction target:
-    y0 = (T_target - local_context_mean) / local_context_std
-
-Final:
-    pred_T = local_context_mean + VAE_residual * local_context_std
-
-VAE design:
-    This is a conditional VAE with a learned conditional prior p(z | context).
-    During training, q(z | y0, context) reconstructs the PG27 residual.
-    During PG29 inference, only p(z | context) is used, so the missing target
-    value is never supplied to the model.
-
-Speed:
-    This script uses a fixed number of random samples per epoch instead of
-    looping over every possible target/time pair.
 """
 
 import os
@@ -76,12 +42,39 @@ import matplotlib.pyplot as plt
 
 # ============================================================
 # 1. CONFIG
-# ============================================================
-PG27_PATH = "/home/unabila/pg27/pg27_TS_30s_common_temp.csv"
-PG29_PATH = "/home/unabila/PG29/pg29_TS_30s_common.csv"
-COORD_PATH = "/home/unabila/PG29/core_TC_coordinates_common_norm.csv"
+from pathlib import Path
+import os
 
-OUT_DIR = Path("/home/unabila/pg27/section_context_local_vae")
+ROOT = Path(__file__).resolve().parents[2]
+
+PG27_PATH = Path(
+    os.environ.get(
+        "PG27_PATH",
+        ROOT / "data" / "pg27_TS_30s_common_temp.csv"
+    )
+)
+
+PG29_PATH = Path(
+    os.environ.get(
+        "PG29_PATH",
+        ROOT / "data" / "pg29_TS_30s_common.csv"
+    )
+)
+
+COORD_PATH = Path(
+    os.environ.get(
+        "COORD_PATH",
+        ROOT / "data" / "core_TC_coordinates_common_norm.csv"
+    )
+)
+
+OUT_DIR = Path(
+    os.environ.get(
+        "OUT_DIR",
+        ROOT / "results" / "inter" / "section_context_local_vae"
+    )
+)
+
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 SEED = int(os.environ.get("SEED", "42"))

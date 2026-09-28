@@ -7,11 +7,6 @@ Section-context GRU baseline for PG27 -> PG29 TS reconstruction.
 This is a deterministic, non-generative counterpart to the section-context
 diffusion model. 
 
-No-cheating protocol:
-- Train the GRU using PG27 only.
-- Select physical and section-context sensors using PG27 only.
-- Use PG29 known sensors only for optional calibration and gating.
-- Use PG29 manually withheld sensors only for final reporting.
 
 """
 

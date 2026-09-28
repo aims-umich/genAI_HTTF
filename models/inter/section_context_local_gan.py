@@ -4,54 +4,7 @@
 """
 Section-context LocationQuery GAN model for PG27 -> PG29 TS reconstruction.
 
-This is the GAN-focused counterpart of the section-context diffusion model
-(section_context_local_dm_v2.py). Everything outside the generative core is
-kept identical on purpose, so the two scripts produce directly comparable
-artifacts (same context selection, same sensor/event weighting, same anchor
-baseline, same pseudo-calibration/gate, same metrics/plots layout) and can be
-benchmarked head-to-head as two different "genAI" backends on the same
-reconstruction task.
 
-Main idea (unchanged from the DM script):
-    The target sensor is reconstructed from two context sets:
-        1. physically nearby known sensors
-        2. PG27 behavior-section known sensors
-
-Why (unchanged):
-    Some sensors are not nearest neighbors but follow similar up/down behavior.
-    Examples like 1303-1703 or 1340-1321 suggest that behavior sections can
-    carry useful PG27 -> PG29 transfer information.
-
-No-cheating protocol (unchanged):
-    - Train the GAN on PG27 only.
-    - Select section sensors using PG27 only.
-    - Use PG29 known sensors only for optional calibration/gating.
-    - Use PG29 manual missing truth only for final reporting.
-
-Prediction target (unchanged):
-    y0 = (T_target - local_context_mean) / local_context_std
-
-Final (unchanged):
-    pred_T = local_context_mean + GAN_residual * local_context_std
-
-What's different vs. the DM script:
-    - No forward noising process, no time embedding, no reverse-diffusion
-      sampling loop.
-    - A conditional Generator maps (context, noise z) -> residual y0_pred
-      directly in one forward pass.
-    - A conditional Discriminator scores (context, y0) as real/fake using a
-      hinge loss with an R1 gradient penalty on real samples for stability.
-    - The Generator is still trained with the same family of physically
-      grounded auxiliary losses the DM script used (local/phys/section delta
-      consistency, slope consistency, residual-magnitude regularizer), so the
-      adversarial loss supplements rather than replaces domain supervision.
-    - "Sampling" at eval time means running the Generator N times with fresh
-      noise and averaging, the GAN analogue of the DM's reverse-diffusion
-      ensemble.
-
-Speed:
-    This script uses a fixed number of random samples per epoch instead of
-    looping over every possible target/time pair.
 """
 
 import os
@@ -88,15 +41,39 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from pathlib import Path
+import os
 
-# ============================================================
-# 1. CONFIG
-# ============================================================
-PG27_PATH = "/home/unabila/pg27/pg27_TS_30s_common_temp.csv"
-PG29_PATH = "/home/unabila/PG29/pg29_TS_30s_common.csv"
-COORD_PATH = "/home/unabila/PG29/core_TC_coordinates_common_norm.csv"
+ROOT = Path(__file__).resolve().parents[2]
 
-OUT_DIR = Path(os.environ.get("OUT_DIR", "/home/unabila/pg27/section_context_local_gan_v2"))
+PG27_PATH = Path(
+    os.environ.get(
+        "PG27_PATH",
+        ROOT / "data" / "pg27_TS_30s_common_temp.csv"
+    )
+)
+
+PG29_PATH = Path(
+    os.environ.get(
+        "PG29_PATH",
+        ROOT / "data" / "pg29_TS_30s_common.csv"
+    )
+)
+
+COORD_PATH = Path(
+    os.environ.get(
+        "COORD_PATH",
+        ROOT / "data" / "core_TC_coordinates_common_norm.csv"
+    )
+)
+
+OUT_DIR = Path(
+    os.environ.get(
+        "OUT_DIR",
+        ROOT / "results" / "inter" / "section_context_local_gan"
+    )
+)
+
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 SEED = int(os.environ.get("SEED", "42"))

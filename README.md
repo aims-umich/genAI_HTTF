@@ -28,13 +28,7 @@ The present work primarily uses two HTTF experiments:
 
 Digital twins rely on sensor measurements to maintain an estimate of the physical system state.
 
-In practice, however, complete sensor availability cannot always be guaranteed. Sensors may:
-
-- fail,
-- become intermittently unavailable,
-- experience degradation,
-- be excluded during data-quality screening, or
-- be deliberately reduced to decrease sensing and computational requirements.
+In practice, complete sensor availability cannot always be guaranteed because sensors may fail, become intermittently unavailable, experience degradation, be excluded during data-quality screening, or be deliberately reduced to decrease sensing and computational requirements.
 
 This creates a **partial-observability problem**.
 
@@ -71,6 +65,11 @@ Six reconstruction approaches are evaluated.
 6. **Ridge Regression**
 
 For intra-experiment reconstruction, the generative models use spatial and temporal information through a common GNN-GRU conditioning framework.
+
+## Data Availability
+
+The original HTTF experimental data used in this study are not included in this public repository due to data-sharing restrictions. Access to the original data may be available upon reasonable request and subject to the applicable requirements.
+The data/ folder contains only placeholder files with dummy values to demonstrate the expected file structure and support basic code testing; these files are not representative of the HTTF measurements and should not be used for scientific analysis.
 
 ## Environment Installation
 
